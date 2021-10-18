@@ -90,11 +90,11 @@ def extract_contests(content: str) -> List[ContestModel]:
         return contests
     for row in rows[1:]:
         cells = row.findChildren('td')
-        print(cells[5])
         con = ContestModel(
             cells[0].text.strip(),
             cells[1].text.strip(),
-            cells[3].text.strip(),
+            int(cells[2]["data-time"]),
+            int(cells[3].text.strip()),
             int(cells[4].text),
             cells[5].findChild('a')['href'],
         )

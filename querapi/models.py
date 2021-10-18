@@ -6,7 +6,8 @@ from typing import Optional, List
 class ContestModel:
     name: str
     start_date: str
-    time: str
+    time: int
+    questions: int
     contestants: int
     link: str
 
