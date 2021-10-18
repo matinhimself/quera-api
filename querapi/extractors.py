@@ -1,6 +1,6 @@
 import string
 
-from .models import ContestModel, Question, Test
+from .models import ContestModel, Question, Test, ClassUser
 from bs4 import BeautifulSoup, NavigableString
 from typing import List
 import re
@@ -101,3 +101,25 @@ def extract_contests(content: str) -> List[ContestModel]:
         contests.append(con)
 
     return contests
+
+
+def extract_class_users(content: str) -> List[ClassUser]:
+    users: List[ClassUser] = []
+
+    table = BeautifulSoup(content, 'html.parser').find('table', {'class': 'ui inverted celled green unstackable table'})
+    rows = table.findChildren('tr')
+    if len(rows) <= 1:
+        return users
+    for row in rows[1:-1]:
+        cells = row.findChildren('td')
+        s_id = cells[0].input.get("value")
+        name = cells[1].text.strip()
+        email = cells[2].div.text.strip()
+        user = ClassUser(
+            s_id,
+            name,
+            email
+        )
+        users.append(user)
+
+    return users

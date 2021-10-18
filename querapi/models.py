@@ -19,6 +19,13 @@ class Test:
 
 
 @dataclass
+class ClassUser:
+    sid: str
+    name: str
+    email: str
+
+
+@dataclass
 class Question:
     qid: str
     name: str

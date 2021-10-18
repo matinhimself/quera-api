@@ -1,4 +1,4 @@
-from querapi.mixins import AuthMixin, ContestMixin
+from querapi.mixins import AuthMixin, ContestMixin, ClassMixin
 
 
 class Client:
@@ -7,6 +7,7 @@ class Client:
         self.email: str
 
 
-class QueraApi(AuthMixin, ContestMixin):
+class QueraApi(AuthMixin, ContestMixin,
+               ClassMixin):
     def __init__(self):
         super().__init__()
