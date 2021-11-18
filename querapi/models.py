@@ -45,3 +45,17 @@ class Course:
     id: str
     name: str
     link: str
+
+@dataclass
+class Assignment:
+    id: str
+    name: str
+    link: str
+    questions: List[Question]
+    deadline: str
+
+@dataclass
+class ShortAssignment:
+    id: str
+    name: str
+    link: str

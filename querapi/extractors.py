@@ -1,6 +1,6 @@
 import string
 
-from .models import ContestModel, Question, Test, ClassUser, Course
+from .models import ContestModel, Question, ShortAssignment, Test, ClassUser, Course
 from bs4 import BeautifulSoup, NavigableString
 from typing import List
 import re
@@ -138,3 +138,18 @@ def extract_courses(content: str) -> List[Course]:
         )
         courses.append(course)
     return courses
+
+def extract_short_assignments(content: str) -> List[ShortAssignment]:
+    shortassignments: List[ShortAssignment] = []
+    table = BeautifulSoup(content, 'html.parser').find('div', {'class': 'ui inline dropdown qu-dropdown right item'})
+    for row in table.findChildren('a'):
+        link = row['href']
+        id = link.split('/')[-2]
+        name = row.text
+        shortassignment = ShortAssignment(
+            id = id,
+            name = name,
+            link = link
+        )
+        shortassignments.append(shortassignment)
+    return shortassignments
