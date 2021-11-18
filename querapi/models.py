@@ -39,3 +39,9 @@ class Question:
 
     def addTest(self, t: Test):
         self.tests.append(t)
+
+@dataclass
+class Course:
+    id: str
+    name: str
+    link: str
