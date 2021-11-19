@@ -1,6 +1,6 @@
 from typing import List
 from .private import PrivateRequest
-from querapi.models import Course, Assignment, ShortAssignment
+from querapi.models import Course, ShortAssignment
 from querapi.extractors import extract_courses, extract_short_assignments
 
 class CourseMixin(PrivateRequest):
