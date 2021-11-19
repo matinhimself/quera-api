@@ -27,6 +27,18 @@ class ClassUser:
 
 
 @dataclass
+class AssignmentUser:
+    sid: str
+    name: str
+
+
+@dataclass
+class AssignmentSubmission:
+    student: AssignmentUser
+    delay_penalty: str
+
+
+@dataclass
 class Question:
     qid: str
     name: str

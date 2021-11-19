@@ -1,6 +1,5 @@
-import string
 
-from .models import ContestModel, Question, Test, ClassUser
+from .models import ContestModel, Question, Test, ClassUser, AssignmentUser, AssignmentSubmission
 from bs4 import BeautifulSoup, NavigableString
 from typing import List
 import re
@@ -123,3 +122,32 @@ def extract_class_users(content: str) -> List[ClassUser]:
         users.append(user)
 
     return users
+
+
+def extract_assignment_submission(content: str) -> List[AssignmentSubmission]:
+    assignments: List[AssignmentSubmission] = list()
+
+    table = BeautifulSoup(content, 'html.parser').find('table', {'class': 'ui selectable unstackable center aligned small table'})
+    rows = table.findChildren('tr')
+
+    if len(rows) <= 1:
+        return assignments
+
+    for row in rows[2:-1]:
+        cells = row.findChildren('td')
+        s_id = cells[0].text.strip()
+        name = cells[1].text.strip()
+        delay_penalty = cells[4].text.strip()
+
+        user = AssignmentUser(
+            s_id,
+            name
+        )
+        assignment = AssignmentSubmission(
+            user,
+            delay_penalty
+        )
+
+        assignments.append(assignment)
+
+    return assignments
