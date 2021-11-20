@@ -2,7 +2,6 @@ from querapi.mixins.private import PrivateRequest
 from querapi.constants import BASE_HEADERS
 import re
 
-
 class AuthMixin(PrivateRequest):
 
     def login(self, email: str, password: str) -> bool:
@@ -27,7 +26,9 @@ class AuthMixin(PrivateRequest):
         self.session.headers.pop('referer')
 
         if response.status_code == 200 and '"is_authenticated": true' in response.text:
-            self.session.cookies.update(response.cookies)
+            self.session.headers.update({
+                'cookie': ' '.join([f'{k}={v};' for k, v in self.session.cookies.get_dict().items()])[:-1]
+            })
             return True
 
         return False
