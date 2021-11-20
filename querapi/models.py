@@ -62,4 +62,7 @@ class Course:
 class ShortAssignment:
     id: str
     name: str
-    link: str
+    questions: int
+    deadline: str
+    can_view: bool
+    can_enter: bool
