@@ -11,7 +11,6 @@ CodeBlock = re.compile(r"^description_md-")
 
 
 def parse_question(content: str, q: Question) -> Question:
-    # source: https://github.com/ParsaAlizadeh/universal-parser-tool
     expected = ("ورودی نمونه", "خروجی نمونه")
     soup = BeautifulSoup(content, 'html.parser')
     desc = soup.find(id=CodeBlock)
@@ -169,17 +168,10 @@ def extract_courses(content: str) -> List[Course]:
         courses.append(course)
     return courses
 
-def extract_short_assignments(content: str) -> List[ShortAssignment]:
-    shortassignments: List[ShortAssignment] = []
-    table = BeautifulSoup(content, 'html.parser').find('div', {'class': 'ui inline dropdown qu-dropdown right item'})
-    for row in table.findChildren('a'):
-        link = row['href']
-        id = link.split('/')[-2]
-        name = row.text
-        shortassignment = ShortAssignment(
-            id = id,
-            name = name,
-            link = link
-        )
-        shortassignments.append(shortassignment)
-    return shortassignments
+def extract_short_assignments(data: dict) -> List[ShortAssignment]:
+    assignment_list = data['assignments']['assignment_list']
+    return [ShortAssignment(
+                assignment['id'], assignment['assignment_name'],
+                assignment['problems_cnt'], assignment['deadline'],
+                assignment['can_view'], assignment['can_enter']
+            ) for assignment in assignment_list ]

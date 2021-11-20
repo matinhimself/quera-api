@@ -12,7 +12,9 @@ class CourseMixin(PrivateRequest):
         contests = extract_courses(res.text)
         return contests
     
-    def get_short_assignments(self, url: str) -> List[ShortAssignment]:
-        res = self.private_request(url)
-        shortassignments = extract_short_assignments(res.text)
-        return shortassignments
+    def get_short_assignments(self, course_id: str) -> List[ShortAssignment]:
+        """
+        returns course assignments in descending order.
+        """
+        res = self.private_request(f'course/qa/api/{course_id}/settings/')
+        return extract_short_assignments(res.json())
