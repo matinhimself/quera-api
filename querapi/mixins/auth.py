@@ -3,22 +3,30 @@ from querapi.constants import BASE_HEADERS
 import re
 
 class AuthMixin(PrivateRequest):
+    
+    csrf_token = None
+    csrfmiddleware_token = None
+    
+    def init(self):
+        """
+        Initialize Login helpers
 
-    def login(self, email: str, password: str) -> bool:
-        # Clean Login
+        """
         self.session.cookies.clear()
         self.session.headers.clear()
         self.session.headers.update(BASE_HEADERS)
 
-        # Get Tokens
         response = self.private_request('accounts/login')
-        csrf_token = response.cookies.get('csrf_token')
-        csrfmiddleware_token = re.findall(r'csrfmiddlewaretoken" value="(.*?)"', response.text)[0]
-        self.session.headers.update({'cookie': f'csrf_token={csrf_token}'})
-
-        # Send Login Request
+        self.csrf_token = response.cookies.get('csrf_token')
+        self.csrfmiddleware_token = re.findall(r'csrfmiddlewaretoken" value="(.*?)"', response.text)[0]
+        
+        
+    def login(self, email: str, password: str) -> bool:
+        self.init()
+        self.session.headers.update({'cookie': f'csrf_token={self.csrf_token}'})
+        
         payload = {
-            'csrfmiddlewaretoken': csrfmiddleware_token,
+            'csrfmiddlewaretoken': self.csrfmiddleware_token,
             'login': email,
             'password': password,
         }
@@ -32,3 +40,11 @@ class AuthMixin(PrivateRequest):
             return True
 
         return False
+
+    def login_by_session_id(self, session_id) -> bool:
+        self.init()
+        self.session.headers.pop('referer')
+        self.session.headers.update({
+                'cookie': f'HTTP_REFERER=quera.ir; csrf_token={self.csrf_token}; session_id={session_id}'
+        })
+        return True
